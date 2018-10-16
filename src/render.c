@@ -32,41 +32,11 @@ void draw_cursor(void) {
 }
 
 void draw_hudl_logo(unsigned int x, unsigned int y) {
-	vram_adr(NTADR_A(x, y));
-	vram_put(HUDL_1);
-	vram_adr(NTADR_A(x+1, y));
-	vram_put(HUDL_2);
-	vram_adr(NTADR_A(x+2, y));
-	vram_put(HUDL_3);
-	vram_adr(NTADR_A(x+3, y));
-	vram_put(HUDL_4);
-
-    vram_adr(NTADR_A(x, y+1));
-	vram_put(HUDL_5);
-	vram_adr(NTADR_A(x+1, y+1));
-	vram_put(HUDL_6);
-	vram_adr(NTADR_A(x+2, y+1));
-	vram_put(HUDL_7);
-	vram_adr(NTADR_A(x+3, y+1));
-	vram_put(HUDL_8);
-
-    vram_adr(NTADR_A(x, y+2));
-	vram_put(HUDL_9);
-	vram_adr(NTADR_A(x+1, y+2));
-	vram_put(HUDL_10);
-	vram_adr(NTADR_A(x+2, y+2));
-	vram_put(HUDL_11);
-	vram_adr(NTADR_A(x+3, y+2));
-	vram_put(HUDL_12);
-
-    vram_adr(NTADR_A(x, y+3));
-	vram_put(HUDL_13);
-	vram_adr(NTADR_A(x+1, y+3));
-	vram_put(HUDL_14);
-	vram_adr(NTADR_A(x+2, y+3));
-	vram_put(HUDL_15);
-	vram_adr(NTADR_A(x+3, y+3));
-	vram_put(HUDL_16);
+    int i;
+    for (i = 0; i < 4; i++) {
+        vram_adr(NTADR_A(x, y + i));
+        vram_write(hudl_logo + (i*4), 4);
+    }
 }
 
 /**
