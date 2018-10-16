@@ -18,6 +18,8 @@ typedef struct gem_board_struct {
 	char gems[GEM_BOARD_WIDTH+1][GEM_BOARD_HEIGHT+1];
 	char matched_gems[GEM_BOARD_WIDTH+1][GEM_BOARD_HEIGHT+1]; //TODO may want to find a more efficient way to track this
 	unsigned char new_render;
+	unsigned char gem_state;
+	unsigned char frame_counter;
 };
 
 #endif

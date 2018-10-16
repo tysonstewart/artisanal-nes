@@ -35,8 +35,9 @@ void populate_gem_colors(void) {
 unsigned char check_any_matches(void) {
     for (x=0; x<=GEM_BOARD_WIDTH; x++){
         for(y=0; y<=GEM_BOARD_HEIGHT; y++){
-            //TODO may have to check if it's a blank and remove
-
+            if (gem_board.gems[x][y] == BLANK_GEM_COLOR) {
+                continue;
+            }
             if (x <= GEM_BOARD_WIDTH-2 && 
                     gem_board.gems[x][y] == gem_board.gems[x+1][y] &&
                     gem_board.gems[x][y] == gem_board.gems[x+2][y]){
@@ -53,7 +54,14 @@ unsigned char check_any_matches(void) {
 }
 
 void fill_removed(void) {
-
+    for (x=0; x<=GEM_BOARD_WIDTH; x++){
+        for(y=0; y<=GEM_BOARD_HEIGHT; y++){
+            if (gem_board.gems[x][y] == BLANK_GEM_COLOR) {
+                gem_board.gems[x][y] = rand8()&0x03;
+                gem_board.new_render = TRUE;
+            }
+        }
+    }
 }
 
 void settle_after_remove(void) {
@@ -65,6 +73,7 @@ void settle_after_remove(void) {
                     if (gem_board.gems[x][y2] != BLANK_GEM_COLOR) {
                         gem_board.gems[x][y] = gem_board.gems[x][y2];
                         gem_board.gems[x][y2] = BLANK_GEM_COLOR;
+                        gem_board.new_render = TRUE;
                         break;
                     }
                     y2--;
@@ -84,6 +93,9 @@ void remove_matched(void) {
 
     for (x=0; x<=GEM_BOARD_WIDTH; x++){
         for(y=0; y<=GEM_BOARD_HEIGHT; y++){
+            if (gem_board.gems[x][y] == BLANK_GEM_COLOR){
+                continue;
+            }
             if (x <= GEM_BOARD_WIDTH-2 && 
                     gem_board.gems[x][y] == gem_board.gems[x+1][y] &&
                     gem_board.gems[x][y] == gem_board.gems[x+2][y]){
@@ -105,6 +117,7 @@ void remove_matched(void) {
         for(y=0; y<=GEM_BOARD_HEIGHT; y++){
             if (gem_board.matched_gems[x][y] == 1) {
                 gem_board.gems[x][y] = BLANK_GEM_COLOR;
+                gem_board.new_render = TRUE;
             }
         }
     }

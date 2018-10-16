@@ -50,6 +50,17 @@ static unsigned char blank_logo[] = {
 #define BLANK_GEM_COLOR  6
 
 /**
+ * States of the gem board that can happen after a swap.
+ */
+#define GEM_STATE_READY     0 //Ready for next swap
+#define GEM_STATE_SWAPPED   1 //We've just swapped
+#define GEM_STATE_CLEARED   2 //We've just cleared some gems
+#define GEM_STATE_SETTLED   3 //We've made gems fall
+#define GEM_STATE_FILLED    4 //We've filled in blank spaces
+
+#define ACTION_DELAY 20 //Frames to wait between gem board actions
+
+/**
  * Macro for calculating the attribute byte of a sprite. The bits of this byte
  * store data as followed (taken from NerdyNights tutorial):
  *
