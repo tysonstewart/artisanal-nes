@@ -54,14 +54,16 @@ static unsigned char blank_logo[] = {
  * States of the gem board that can happen after a swap.
  */
 #define GEM_STATE_READY     0 //Ready for next swap
-#define GEM_STATE_SWAPPED   1 //We've just swapped
-#define GEM_STATE_CLEARED   2 //We've just cleared some gems
-#define GEM_STATE_SETTLED   3 //We've made gems fall
-#define GEM_STATE_FILLING   4 //We're in the middle of filling the board
-#define GEM_STATE_FILLED    5 //We've filled in blank spaces
+#define GEM_STATE_SWAPPING  1 //We're in the middle of swapping gems
+#define GEM_STATE_SWAPPED   2 //We've just swapped
+#define GEM_STATE_CLEARED   3 //We've just cleared some gems
+#define GEM_STATE_SETTLED   4 //We've made gems fall
+#define GEM_STATE_FILLING   5 //We're in the middle of filling the board
+#define GEM_STATE_FILLED    6 //We've filled in blank spaces
 
 #define ACTION_DELAY 20 //Frames to wait between gem board actions
 #define FILL_DELAY 5 //Frames to wait between falling gem movements
+#define SWAP_DELAY 1 //Frames to wait between swapping movements
 
 /**
  * Macro for calculating the attribute byte of a sprite. The bits of this byte
@@ -91,6 +93,14 @@ static unsigned char gem_sprite[] = {
     0, 16, HUDL_9, 0, 8, 16, HUDL_10, 0, 16, 16, HUDL_11, 0, 24, 16, HUDL_12, 0,
     0, 24, HUDL_13, 0, 8, 24, HUDL_14, 0, 16, 24, HUDL_15, 0, 24, 24, HUDL_16, 0,
     128
+};
+
+static unsigned char blank_gem[] = {
+    0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00,
+    NT_UPD_EOF
 };
 
 static unsigned char gem_bg[] = {
