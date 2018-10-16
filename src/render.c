@@ -52,6 +52,26 @@ void draw_blank_logo(unsigned int x,  unsigned int y) {
     }
 }
 
+void draw_blank_logo_no_update(unsigned int x, unsigned int y) {
+	unsigned int address;
+    x = GEM_BOARD_START_X + x * GEM_WIDTH_TILES;
+    y = GEM_BOARD_START_Y + y * GEM_WIDTH_TILES;
+    address = NTADR_A(x, y);
+
+    blank_gem[0] = MSB(address)|NT_UPD_HORZ;
+    blank_gem[1] = LSB(address);
+    address += 0x20;
+    blank_gem[7] = MSB(address)|NT_UPD_HORZ;
+    blank_gem[8] = LSB(address);
+    address += 0x20;
+    blank_gem[14] = MSB(address)|NT_UPD_HORZ;
+    blank_gem[15] = LSB(address);
+    address += 0x20;
+    blank_gem[21] = MSB(address)|NT_UPD_HORZ;
+    blank_gem[22] = LSB(address);
+    set_vram_update(blank_gem);
+}
+
 /**
  * These two methods make assumptions about gem size and where the board starts
  * starting background palette is at x=8, y=30 with most sig bits being left half of first gem
@@ -145,6 +165,75 @@ void draw_falling_gems(void){
 			break;
 		}
 	}
+}
+
+void animate_swap(void){
+	int i = 0;
+	int swapping_with_x = gem_board.swapping_x;
+	int swapping_with_y = gem_board.swapping_y;
+
+	
+
+	for (i=3; i<63; i+=4){
+		gem_sprite[i] = SPRITE_ATTR(0,0,0, gem_board.gems[gem_board.swapping_x][gem_board.swapping_y]);
+	}
+	x = (gem_board.swapping_x * GEM_WIDTH) + (GEM_BOARD_START_X * 8);
+	y = (gem_board.swapping_y * GEM_WIDTH) + (GEM_BOARD_START_Y * 8);
+	switch (gem_board.swapping_dir){
+		case PAD_LEFT:
+			x -= gem_board.swap_step;
+			swapping_with_x--;
+			break;
+		case PAD_RIGHT:
+			x += gem_board.swap_step;
+			swapping_with_x++;
+			break;
+		case PAD_UP:
+			y -= gem_board.swap_step;
+			swapping_with_y--;
+			break;
+		case PAD_DOWN:
+			y += gem_board.swap_step;
+			swapping_with_y++;
+			break;
+	}
+
+	if (gem_board.swap_step == 0) {
+		draw_blank_logo_no_update(gem_board.swapping_x, gem_board.swapping_y);
+	}
+	if (gem_board.swap_step == 2) {
+		draw_blank_logo_no_update(swapping_with_x, swapping_with_y);
+	}
+	if (gem_board.swap_step >= 32) {
+		//TODO update these live instead of needing a rerender
+		oam_clear();
+		draw_hudl_logo(gem_board.swapping_x, gem_board.swapping_y);
+		draw_hudl_logo(swapping_with_x, swapping_with_y);
+		return;
+	}
+
+	sprite_offset = oam_meta_spr(x, y, 0, gem_sprite);
+
+	for (i=3; i<63; i+=4){
+		gem_sprite[i] = SPRITE_ATTR(0,0,0, gem_board.gems[swapping_with_x][swapping_with_y]);
+	}
+	x = (swapping_with_x * GEM_WIDTH) + (GEM_BOARD_START_X * 8);
+	y = (swapping_with_y * GEM_WIDTH) + (GEM_BOARD_START_Y * 8);
+	switch (gem_board.swapping_dir){
+		case PAD_LEFT:
+			x += gem_board.swap_step;
+			break;
+		case PAD_RIGHT:
+			x -= gem_board.swap_step;
+			break;
+		case PAD_UP:
+			y += gem_board.swap_step;
+			break;
+		case PAD_DOWN:
+			y -= gem_board.swap_step;
+			break;
+	}
+	sprite_offset = oam_meta_spr(x, y, sprite_offset, gem_sprite);
 }
 
 void draw_gem_board(void){

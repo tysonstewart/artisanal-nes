@@ -20,6 +20,11 @@ typedef struct gem_board_struct {
 	unsigned char new_render;
 	unsigned char gem_state;
 	unsigned char frame_counter;
+
+	unsigned char swapping_x;
+	unsigned char swapping_y;
+	unsigned char swapping_dir;
+	unsigned char swap_step;
 };
 
 #endif

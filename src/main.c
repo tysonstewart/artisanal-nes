@@ -33,12 +33,30 @@ void main(void)
 				write_debug("READY           ");
 				mainloop_handle_input();
 				if (cursor.swap_direction != NULL) {
+					gem_board.gem_state = GEM_STATE_SWAPPING;
+					gem_board.swap_step = 0;
+					gem_board.frame_counter = 0;
+					// oam_clear();
+				}
+				break;
+				
+			case GEM_STATE_SWAPPING:
+				write_debug("SWAPPING        ");
+				if (gem_board.frame_counter <= SWAP_DELAY) {
+					gem_board.frame_counter++;
+					break;
+				}
+				if (gem_board.swap_step <= 32) {
+					animate_swap();
+					gem_board.swap_step++;
+					gem_board.frame_counter = 0;
+				} else {
 					perform_swap();
 					gem_board.gem_state = GEM_STATE_SWAPPED;
 					gem_board.frame_counter = 0;
 				}
 				break;
-				
+
 			
 			case GEM_STATE_SWAPPED:
 				write_debug("SWAPPED         ");
