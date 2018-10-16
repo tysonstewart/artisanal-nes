@@ -4,12 +4,14 @@
 #include "init.c"
 #include "../res/gem_background_nam.h"
 
-
+#include "debug.c"
 
 void main(void)
 {
 	draw_title_screen();
 	delay(120);
+
+	write_debug("IT'S SOMETHING!");
 	pal_spr(menue_pal);
 
     ppu_off();
