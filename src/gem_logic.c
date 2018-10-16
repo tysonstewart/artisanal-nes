@@ -31,3 +31,129 @@ void populate_gem_colors(void) {
         }
     }
 }
+
+unsigned char check_any_matches(void) {
+    for (x=0; x<=GEM_BOARD_WIDTH; x++){
+        for(y=0; y<=GEM_BOARD_HEIGHT; y++){
+            //TODO may have to check if it's a blank and remove
+
+            if (x <= GEM_BOARD_WIDTH-2 && 
+                    gem_board.gems[x][y] == gem_board.gems[x+1][y] &&
+                    gem_board.gems[x][y] == gem_board.gems[x+2][y]){
+                return TRUE;
+            }
+            if (y <= GEM_BOARD_HEIGHT-2 && 
+                    gem_board.gems[x][y] == gem_board.gems[x][y+1] &&
+                    gem_board.gems[x][y] == gem_board.gems[x][y+2]){
+                return TRUE;
+            }
+        }
+    }
+    return FALSE;
+}
+
+void fill_removed(void) {
+
+}
+
+void settle_after_remove(void) {
+    for (x=0; x<=GEM_BOARD_WIDTH; x++){
+        for(y=GEM_BOARD_HEIGHT; y>=0; y--){ //Start at the bottom and work your way up
+            if (gem_board.gems[x][y] == BLANK_GEM_COLOR){
+                y2 = y-1;
+                while(y2 >= 0){
+                    if (gem_board.gems[x][y2] != BLANK_GEM_COLOR) {
+                        gem_board.gems[x][y] = gem_board.gems[x][y2];
+                        gem_board.gems[x][y2] = BLANK_GEM_COLOR;
+                        break;
+                    }
+                    y2--;
+                }
+            }
+        }
+    }
+}
+
+//Find the matched gems and remove them. Gems above fall down, leaving blanks (-1) in their place
+void remove_matched(void) {
+    for (x=0; x<=GEM_BOARD_WIDTH; x++){
+        for(y=0; y<=GEM_BOARD_HEIGHT; y++){
+            gem_board.matched_gems[x][y] = 0;
+        }
+    }
+
+    for (x=0; x<=GEM_BOARD_WIDTH; x++){
+        for(y=0; y<=GEM_BOARD_HEIGHT; y++){
+            if (x <= GEM_BOARD_WIDTH-2 && 
+                    gem_board.gems[x][y] == gem_board.gems[x+1][y] &&
+                    gem_board.gems[x][y] == gem_board.gems[x+2][y]){
+                gem_board.matched_gems[x][y] = 1;
+                gem_board.matched_gems[x+1][y] = 1;
+                gem_board.matched_gems[x+2][y] = 1;
+            }
+            if (y <= GEM_BOARD_HEIGHT-2 && 
+                    gem_board.gems[x][y] == gem_board.gems[x][y+1] &&
+                    gem_board.gems[x][y] == gem_board.gems[x][y+2]){
+                gem_board.matched_gems[x][y] = 1;
+                gem_board.matched_gems[x][y+1] = 1;
+                gem_board.matched_gems[x][y+2] = 1;
+            }
+        }
+    }
+
+    for (x=0; x<=GEM_BOARD_WIDTH; x++){
+        for(y=0; y<=GEM_BOARD_HEIGHT; y++){
+            if (gem_board.matched_gems[x][y] == 1) {
+                gem_board.gems[x][y] = BLANK_GEM_COLOR;
+            }
+        }
+    }
+}
+
+void perform_swap(void) {
+    color_candidate = gem_board.gems[cursor.gem_x][cursor.gem_y];
+    switch (cursor.swap_direction) {
+        case PAD_LEFT:
+            if (cursor.gem_x == 0){
+                return;
+            }
+            gem_board.gems[cursor.gem_x][cursor.gem_y] = gem_board.gems[cursor.gem_x-1][cursor.gem_y];
+            gem_board.gems[cursor.gem_x-1][cursor.gem_y] = color_candidate;
+            cursor.gem_x -= 1;
+            cursor.new_render = TRUE;
+            gem_board.new_render = TRUE;
+            return;
+        case PAD_RIGHT:
+            if (cursor.gem_x == GEM_BOARD_WIDTH){
+                return;
+            }
+            gem_board.gems[cursor.gem_x][cursor.gem_y] = gem_board.gems[cursor.gem_x+1][cursor.gem_y];
+            gem_board.gems[cursor.gem_x+1][cursor.gem_y] = color_candidate;
+            cursor.gem_x += 1;
+            cursor.new_render = TRUE;
+            gem_board.new_render = TRUE;
+            return;
+        case PAD_UP:
+            if (cursor.gem_y == 0){
+                return;
+            }
+            gem_board.gems[cursor.gem_x][cursor.gem_y] = gem_board.gems[cursor.gem_x][cursor.gem_y-1];
+            gem_board.gems[cursor.gem_x][cursor.gem_y-1] = color_candidate;
+            cursor.gem_y -= 1;
+            cursor.new_render = TRUE;
+            gem_board.new_render = TRUE;
+            return;
+        case PAD_DOWN:
+            if (cursor.gem_y == GEM_BOARD_HEIGHT){
+                return;
+            }
+            gem_board.gems[cursor.gem_x][cursor.gem_y] = gem_board.gems[cursor.gem_x][cursor.gem_y+1];
+            gem_board.gems[cursor.gem_x][cursor.gem_y+1] = color_candidate;
+            cursor.gem_y += 1;
+            cursor.new_render = TRUE;
+            gem_board.new_render = TRUE;
+            return;
+        default:
+            return;
+    }
+}

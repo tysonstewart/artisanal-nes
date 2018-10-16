@@ -19,7 +19,8 @@ static unsigned char *bg_pal;
 static unsigned char bg_pal_x;
 static unsigned char bg_pal_y;
 
-static unsigned int x, y;
+static int x, y;
+static int x2, y2;
 static unsigned char color_candidate;
 
 #endif

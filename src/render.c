@@ -39,6 +39,14 @@ void draw_hudl_logo(unsigned int x, unsigned int y) {
     }
 }
 
+void draw_blank_logo(unsigned int x,  unsigned int y) {
+	int i;
+    for (i = 0; i < 4; i++) {
+        vram_adr(NTADR_A(x, y + i));
+        vram_write(blank_logo + (i*4), 4);
+    }
+}
+
 /**
  * These two methods make assumptions about gem size and where the board starts
  * starting background palette is at x=8, y=30 with most sig bits being left half of first gem
@@ -123,14 +131,7 @@ void enter_swap_mode(void) {
     set_vram_update(blank_gem);
 }
 
-void draw_gem_board(void){
-    for (x = 0; x <= GEM_BOARD_WIDTH; x++){
-		for (y = 0; y <= GEM_BOARD_HEIGHT; y++){
-            draw_hudl_logo(GEM_BOARD_START_X + x * GEM_WIDTH_TILES, 
-                           GEM_BOARD_START_Y + y * GEM_WIDTH_TILES);
-		}
-	}
-
+void update_gem_colors(void){
 	for (x=0; x<=GEM_BOARD_WIDTH; x++){
 		for(y=0; y<=GEM_BOARD_HEIGHT; y++){
 			set_gem_pal(x, y, gem_board.gems[x][y]);
@@ -138,9 +139,37 @@ void draw_gem_board(void){
 	}
 }
 
+void draw_gem_board(void){
+    // for (x = 0; x <= GEM_BOARD_WIDTH; x++){
+	// 	for (y = 0; y <= GEM_BOARD_HEIGHT; y++){
+    //         draw_hudl_logo(GEM_BOARD_START_X + x * GEM_WIDTH_TILES, 
+    //                        GEM_BOARD_START_Y + y * GEM_WIDTH_TILES);
+	// 	}
+	// }
+    for (x=GEM_BOARD_START_X; x<=GEM_BOARD_WIDTH*GEM_WIDTH/8 + GEM_BOARD_START_X; x += GEM_WIDTH/8){
+		for (y=GEM_BOARD_START_Y; y<=GEM_BOARD_HEIGHT*GEM_WIDTH/8 + GEM_BOARD_START_Y; y += GEM_WIDTH/8){
+			x2 = (x - GEM_BOARD_START_X) / 4;
+			y2 = (y - GEM_BOARD_START_Y) / 4;
+			if (gem_board.gems[x2][y2] == BLANK_GEM_COLOR) {
+				draw_blank_logo(x,y);
+			} else {
+				draw_hudl_logo(x,y);
+			}
+		}
+	}
+	update_gem_colors();	
+}
+
 void mainloop_render(void){
     if (cursor.new_render){
         draw_cursor();
         cursor.new_render = FALSE;
     }
+	if (gem_board.new_render){
+		ppu_off();
+		draw_gem_board();
+		ppu_on_all();
+		gem_board.new_render = FALSE;
+	}
+
 }

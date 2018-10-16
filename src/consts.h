@@ -39,6 +39,10 @@ static unsigned char blank_gem[] = {
     NT_UPD_EOF
 };
 
+static unsigned char blank_logo[] = {
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+};
+
 #define CURSOR_BORDER_TOP_LEFT  0x44
 #define CURSOR_BORDER_TOP       0x45
 #define CURSOR_BORDER_LEFT      0x46
@@ -52,6 +56,7 @@ static unsigned char blank_gem[] = {
 #define GEM_WIDTH_TILES 4  // 32 pixels / 8 pixels per tile
 #define GEM_BOARD_WIDTH 6 //7 gems wide
 #define GEM_BOARD_HEIGHT 5 //6 gems high
+#define BLANK_GEM_COLOR  6
 
 /**
  * Macro for calculating the attribute byte of a sprite. The bits of this byte
