@@ -31,6 +31,14 @@ static unsigned char hudl_logo[] = {
     HUDL_13, HUDL_14, HUDL_15, HUDL_16
 };
 
+static unsigned char blank_gem[] = {
+    0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00,
+    NT_UPD_EOF
+};
+
 #define CURSOR_BORDER_TOP_LEFT  0x44
 #define CURSOR_BORDER_TOP       0x45
 #define CURSOR_BORDER_LEFT      0x46
@@ -41,6 +49,7 @@ static unsigned char hudl_logo[] = {
 #define GEM_BOARD_START_X 2 //2 8 pixel blocks over
 #define GEM_BOARD_START_Y 4 //4 8 pixel blocks down
 #define GEM_WIDTH       32 //24 pixels wide
+#define GEM_WIDTH_TILES 4  // 32 pixels / 8 pixels per tile
 #define GEM_BOARD_WIDTH 6 //7 gems wide
 #define GEM_BOARD_HEIGHT 5 //6 gems high
 

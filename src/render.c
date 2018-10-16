@@ -103,10 +103,31 @@ void set_gem_pal(unsigned char x, unsigned char y, unsigned char pal){
 	vram_put(*bg_pal);
 }
 
+void enter_swap_mode(void) {
+    unsigned int address;
+    x = GEM_BOARD_START_X + cursor.gem_x * GEM_WIDTH_TILES;
+    y = GEM_BOARD_START_Y + cursor.gem_y * GEM_WIDTH_TILES;
+    address = NTADR_A(x, y);
+    blank_gem[0] = MSB(address)|NT_UPD_HORZ;
+    blank_gem[1] = LSB(address);
+    address += 0x20;
+    blank_gem[7] = MSB(address)|NT_UPD_HORZ;
+    blank_gem[8] = LSB(address);
+    address += 0x20;
+    blank_gem[14] = MSB(address)|NT_UPD_HORZ;
+    blank_gem[15] = LSB(address);
+    address += 0x20;
+    blank_gem[21] = MSB(address)|NT_UPD_HORZ;
+    blank_gem[22] = LSB(address);
+
+    set_vram_update(blank_gem);
+}
+
 void draw_gem_board(void){
-    for (x=GEM_BOARD_START_X; x<=GEM_BOARD_WIDTH*GEM_WIDTH/8 + GEM_BOARD_START_X; x += GEM_WIDTH/8){
-		for (y=GEM_BOARD_START_Y; y<=GEM_BOARD_HEIGHT*GEM_WIDTH/8 + GEM_BOARD_START_Y; y += GEM_WIDTH/8){
-			draw_hudl_logo(x,y);
+    for (x = 0; x <= GEM_BOARD_WIDTH; x++){
+		for (y = 0; y <= GEM_BOARD_HEIGHT; y++){
+            draw_hudl_logo(GEM_BOARD_START_X + x * GEM_WIDTH_TILES, 
+                           GEM_BOARD_START_Y + y * GEM_WIDTH_TILES);
 		}
 	}
 
@@ -118,11 +139,8 @@ void draw_gem_board(void){
 }
 
 void mainloop_render(void){
-
     if (cursor.new_render){
         draw_cursor();
         cursor.new_render = FALSE;
     }
-	
-
 }

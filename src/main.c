@@ -31,22 +31,16 @@ void main(void)
 		mainloop_handle_input();
 		switch (cursor.swap_direction) {
 			case PAD_LEFT:
-				write_debug("SWAP LEFT       ");
-				break;
 			case PAD_RIGHT:
-				write_debug("SWAP RIGHT      ");
-				break;
 			case PAD_UP:
-				write_debug("SWAP UP         ");
-				break;
 			case PAD_DOWN:
-				write_debug("SWAP DOWN       ");
+				write_debug("SWAP MODE       ");
+				enter_swap_mode();
 				break;
 			default:
 				write_debug("FREE MOVEMENT   ");
+				mainloop_render();
 		}
-
-		mainloop_render();
 		//Wait for next frame
 		ppu_wait_nmi();
 	}
