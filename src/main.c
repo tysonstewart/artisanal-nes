@@ -51,6 +51,8 @@ void main(void)
 		}
 		if (check_any_matches()){
 			write_debug("MATCH DETECTED  ");
+			remove_matched();
+			settle_after_remove();
 		}
 
 		mainloop_render();

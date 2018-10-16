@@ -31,6 +31,10 @@ static unsigned char hudl_logo[] = {
     HUDL_13, HUDL_14, HUDL_15, HUDL_16
 };
 
+static unsigned char blank_logo[] = {
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
+};
+
 #define CURSOR_BORDER_TOP_LEFT  0x44
 #define CURSOR_BORDER_TOP       0x45
 #define CURSOR_BORDER_LEFT      0x46
@@ -43,6 +47,7 @@ static unsigned char hudl_logo[] = {
 #define GEM_WIDTH       32 //24 pixels wide
 #define GEM_BOARD_WIDTH 6 //7 gems wide
 #define GEM_BOARD_HEIGHT 5 //6 gems high
+#define BLANK_GEM_COLOR  6
 
 /**
  * Macro for calculating the attribute byte of a sprite. The bits of this byte

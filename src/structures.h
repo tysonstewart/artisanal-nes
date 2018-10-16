@@ -15,8 +15,8 @@ typedef struct cursor_struct {
 };
 
 typedef struct gem_board_struct {
-	unsigned char gems[GEM_BOARD_WIDTH+1][GEM_BOARD_HEIGHT+1];
-	unsigned char matched_gems[GEM_BOARD_WIDTH+1][GEM_BOARD_HEIGHT+1]; //TODO may want to find a more efficient way to track this
+	char gems[GEM_BOARD_WIDTH+1][GEM_BOARD_HEIGHT+1];
+	char matched_gems[GEM_BOARD_WIDTH+1][GEM_BOARD_HEIGHT+1]; //TODO may want to find a more efficient way to track this
 	unsigned char new_render;
 };
 

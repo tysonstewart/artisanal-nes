@@ -53,20 +53,21 @@ unsigned char check_any_matches(void) {
 }
 
 void fill_removed(void) {
-    
+
 }
 
 void settle_after_remove(void) {
     for (x=0; x<=GEM_BOARD_WIDTH; x++){
         for(y=GEM_BOARD_HEIGHT; y>=0; y--){ //Start at the bottom and work your way up
-            if (gem_board.gems[x][y] == -1){
+            if (gem_board.gems[x][y] == BLANK_GEM_COLOR){
                 y2 = y-1;
                 while(y2 >= 0){
-                    if (gem_board.gems[x][y2] != -1) {
+                    if (gem_board.gems[x][y2] != BLANK_GEM_COLOR) {
                         gem_board.gems[x][y] = gem_board.gems[x][y2];
-                        gem_board.gems[x][y2] = -1;
+                        gem_board.gems[x][y2] = BLANK_GEM_COLOR;
                         break;
                     }
+                    y2--;
                 }
             }
         }
@@ -103,7 +104,7 @@ void remove_matched(void) {
     for (x=0; x<=GEM_BOARD_WIDTH; x++){
         for(y=0; y<=GEM_BOARD_HEIGHT; y++){
             if (gem_board.matched_gems[x][y] == 1) {
-                gem_board.gems[x][y] = -1;
+                gem_board.gems[x][y] = BLANK_GEM_COLOR;
             }
         }
     }
