@@ -28,31 +28,75 @@ void main(void)
 	
 	while (1)
 	{
-		mainloop_handle_input();
-		switch (cursor.swap_direction) {
-			case PAD_LEFT:
-				write_debug("SWAP LEFT       ");
-				perform_swap();
+		switch(gem_board.gem_state){
+			case GEM_STATE_READY:
+				write_debug("READY           ");
+				mainloop_handle_input();
+				if (cursor.swap_direction != NULL) {
+					perform_swap();
+					gem_board.gem_state = GEM_STATE_SWAPPED;
+					gem_board.frame_counter = 0;
+				}
 				break;
-			case PAD_RIGHT:
-				write_debug("SWAP RIGHT      ");
-				perform_swap();
+				
+			
+			case GEM_STATE_SWAPPED:
+				write_debug("SWAPPED         ");
+				if (gem_board.frame_counter <= ACTION_DELAY) {
+					gem_board.frame_counter++;
+					break;
+				}
+				if (check_any_matches()){
+					remove_matched();
+					gem_board.gem_state = GEM_STATE_CLEARED;
+					gem_board.frame_counter = 0;
+				} else {
+					gem_board.gem_state = GEM_STATE_READY; //TODO probably swap back
+					gem_board.frame_counter = 0;
+				}
 				break;
-			case PAD_UP:
-				write_debug("SWAP UP         ");
-				perform_swap();
+
+			case GEM_STATE_CLEARED:
+				write_debug("CLEARED         ");
+				if (gem_board.frame_counter <= ACTION_DELAY) {
+					gem_board.frame_counter++;
+					break;
+				}
+				settle_after_remove();
+				gem_board.gem_state = GEM_STATE_SETTLED;
+				gem_board.frame_counter = 0;
 				break;
-			case PAD_DOWN:
-				write_debug("SWAP DOWN       ");
-				perform_swap();
+
+			case GEM_STATE_SETTLED:
+				write_debug("SETTLED         ");
+				if (gem_board.frame_counter <= ACTION_DELAY) {
+					gem_board.frame_counter++;
+					break;
+				}
+				if (check_any_matches()) {
+					gem_board.gem_state = GEM_STATE_SWAPPED;
+					gem_board.frame_counter = 0;
+				} else {
+					fill_removed();
+					gem_board.gem_state = GEM_STATE_FILLED;
+					gem_board.frame_counter = 0;
+				}
 				break;
-			// default:
-				//write_debug("FREE MOVEMENT   ");
-		}
-		if (check_any_matches()){
-			write_debug("MATCH DETECTED  ");
-			remove_matched();
-			settle_after_remove();
+			
+			case GEM_STATE_FILLED:
+				if (gem_board.frame_counter <= ACTION_DELAY) {
+					gem_board.frame_counter++;
+					break;
+				}
+				if (check_any_matches()) {
+					gem_board.gem_state = GEM_STATE_SWAPPED;
+					gem_board.frame_counter = 0;
+				} else {
+					gem_board.gem_state = GEM_STATE_READY;
+					gem_board.frame_counter = 0;
+				}
+				break;
+
 		}
 
 		mainloop_render();
