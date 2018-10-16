@@ -133,18 +133,21 @@ void set_gem_pal(unsigned char x, unsigned char y, unsigned char pal){
 	vram_put(*bg_pal);
 }
 
+void update_gem_colors(void){
+	for (x=0; x<=GEM_BOARD_WIDTH; x++){
+		for(y=0; y<=GEM_BOARD_HEIGHT; y++){
+			set_gem_pal(x, y, gem_board.gems[x][y]);
+		}
+	}
+}
+
 void draw_gem_board(void){
     for (x=GEM_BOARD_START_X; x<=GEM_BOARD_WIDTH*GEM_WIDTH/8 + GEM_BOARD_START_X; x += GEM_WIDTH/8){
 		for (y=GEM_BOARD_START_Y; y<=GEM_BOARD_HEIGHT*GEM_WIDTH/8 + GEM_BOARD_START_Y; y += GEM_WIDTH/8){
 			draw_hudl_logo(x,y);
 		}
 	}
-
-	for (x=0; x<=GEM_BOARD_WIDTH; x++){
-		for(y=0; y<=GEM_BOARD_HEIGHT; y++){
-			set_gem_pal(x, y, gem_board.gems[x][y]);
-		}
-	}
+	update_gem_colors();	
 }
 
 void mainloop_render(void){
@@ -153,6 +156,10 @@ void mainloop_render(void){
         draw_cursor();
         cursor.new_render = FALSE;
     }
-	
+	if (gem_board.new_render){
+		update_gem_colors();
+		ppu_on_all();
+		gem_board.new_render = FALSE;
+	}
 
 }

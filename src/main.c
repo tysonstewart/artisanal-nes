@@ -16,7 +16,7 @@ void main(void)
 	pal_spr(menue_pal);
 
     ppu_off();
-
+	init_gem_board();
 	populate_gem_colors();
 	//gem background
 	vram_adr(NAMETABLE_A);
@@ -25,25 +25,32 @@ void main(void)
 
 	//enable rendering
 	ppu_on_all();
-	init_gem_board();
+	
 	while (1)
 	{
 		mainloop_handle_input();
 		switch (cursor.swap_direction) {
 			case PAD_LEFT:
 				write_debug("SWAP LEFT       ");
+				perform_swap();
 				break;
 			case PAD_RIGHT:
 				write_debug("SWAP RIGHT      ");
+				perform_swap();
 				break;
 			case PAD_UP:
 				write_debug("SWAP UP         ");
+				perform_swap();
 				break;
 			case PAD_DOWN:
 				write_debug("SWAP DOWN       ");
+				perform_swap();
 				break;
-			default:
-				write_debug("FREE MOVEMENT   ");
+			// default:
+				//write_debug("FREE MOVEMENT   ");
+		}
+		if (check_any_matches()){
+			write_debug("MATCH DETECTED  ");
 		}
 
 		mainloop_render();

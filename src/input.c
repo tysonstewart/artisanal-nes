@@ -10,7 +10,7 @@ void mainloop_handle_input(void){
 		cursor.palette = 2; // set gem swap mode ON
 		cursor.new_render = TRUE;
 	}
-	else if (previous_state&PAD_A){
+	else if (previous_state&PAD_A && cursor.palette == 2){
 		cursor.palette = 2;
 	}
 	else {
@@ -22,6 +22,7 @@ void mainloop_handle_input(void){
 	if(input&PAD_LEFT){
 		if (cursor.palette == 2) { // gem swap mode is ON
 			cursor.swap_direction = PAD_LEFT;
+			cursor.palette = 1;
 			return;
 		}
 
@@ -36,6 +37,7 @@ void mainloop_handle_input(void){
 	if(input&PAD_RIGHT){
 		if (cursor.palette == 2) { // gem swap mode is ON
 			cursor.swap_direction = PAD_RIGHT;
+			cursor.palette = 1;
 			return;
 		}
 
@@ -50,6 +52,7 @@ void mainloop_handle_input(void){
 	if(input&PAD_UP){
 		if (cursor.palette == 2) { // gem swap mode is ON
 			cursor.swap_direction = PAD_UP;
+			cursor.palette = 1;
 			return;
 		}
 
@@ -64,6 +67,7 @@ void mainloop_handle_input(void){
 	if(input&PAD_DOWN){
 		if (cursor.palette == 2) { // gem swap mode is ON
 			cursor.swap_direction = PAD_DOWN;
+			cursor.palette = 1;
 			return;
 		}
 
