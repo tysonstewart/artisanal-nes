@@ -150,7 +150,7 @@ unsigned char get_bg_pal_y(unsigned char gem_x, unsigned char gem_y){
 void set_gem_pal_live(unsigned char x, unsigned char y){
     unsigned int address;
     unsigned char gem, gem_left, gem_right, bg_left, bg_right;
-    unsigned char update[5];
+    unsigned char update[6];
 	bg_pal_x = get_bg_pal_x(x, y);
 	bg_pal_y = get_bg_pal_y(x, y);
 	address = NTADR_A(bg_pal_x, bg_pal_y);
@@ -166,14 +166,16 @@ void set_gem_pal_live(unsigned char x, unsigned char y){
         gem_right = gem_board.gems[x+1][y];
     }
 
-	bg_left = (gem << 6) | (gem_left << 4) | (gem << 2) || (gem_left);
-	bg_right = (gem_right << 6) | (gem << 4) | (gem_right << 2) || (gem);
+	bg_left = (gem << 6) | (gem_left << 4) | (gem << 2) | (gem_left);
+	bg_right = (gem_right << 6) | (gem << 4) | (gem_right << 2) | (gem);
 
     update[0] = MSB(address)|NT_UPD_HORZ;
     update[1] = LSB(address);
     update[2] = 2;
     update[3] = bg_left;
     update[4] = bg_right;
+	update[5] = NT_UPD_EOF;
+	set_vram_update(update);
 }
 
 void set_gem_pal(unsigned char x, unsigned char y, unsigned char pal){
@@ -228,7 +230,7 @@ void draw_falling_gems(void){
 	for (x=0; x<=GEM_BOARD_WIDTH; x++){
 		for(y=GEM_BOARD_HEIGHT; y>=0; y--){ //start at the bottom
 			if (gem_board.board_copy[x][y] > 0){
-				gem_board.board_copy[x][y] += 1;
+				gem_board.board_copy[x][y] += 2;
 				draw_falling_gem_sprite(x, y, gem_board.board_copy[x][y], gem_board.gems[x][y]);
 				if (gem_board.board_copy[x][y] >= 10) {
                     draw_hudl_logo_live(x, y);
@@ -244,12 +246,58 @@ void draw_falling_gems(void){
 	}
 }
 
-void animate_swap(void){
+void prep_animate_swap(unsigned char step){
+	int swapping_with_x = gem_board.swapping_x;
+	int swapping_with_y = gem_board.swapping_y;
+	if (step == 0) {
+		draw_blank_logo_no_update(gem_board.swapping_x, gem_board.swapping_y);
+	} else if (step == 1) {
+		switch (gem_board.swapping_dir){
+			case PAD_LEFT: 		swapping_with_x--; break;
+			case PAD_RIGHT: 	swapping_with_x++; break;
+			case PAD_UP:		swapping_with_y--; break;
+			case PAD_DOWN:		swapping_with_y++; break;
+		}
+		draw_blank_logo_no_update(swapping_with_x, swapping_with_y);
+	}
+}
+
+void post_animate_bg(unsigned char step){
+	int swapping_with_x = gem_board.swapping_x;
+	int swapping_with_y = gem_board.swapping_y;
+	if (step == 0) {
+		set_gem_pal_live(gem_board.swapping_x, gem_board.swapping_y);
+	} else if (step == 1) {
+		switch (gem_board.swapping_dir){
+			case PAD_LEFT: 		swapping_with_x--; break;
+			case PAD_RIGHT: 	swapping_with_x++; break;
+			case PAD_UP:		swapping_with_y--; break;
+			case PAD_DOWN:		swapping_with_y++; break;
+		}
+		set_gem_pal_live(swapping_with_x, swapping_with_y);
+	}
+}
+
+void post_animate_swap(unsigned char step){
+	int swapping_with_x = gem_board.swapping_x;
+	int swapping_with_y = gem_board.swapping_y;
+	if (step == 0) {
+		draw_hudl_logo_live(gem_board.swapping_x, gem_board.swapping_y);
+	} else if (step == 1) {
+		switch (gem_board.swapping_dir){
+			case PAD_LEFT: 		swapping_with_x--; break;
+			case PAD_RIGHT: 	swapping_with_x++; break;
+			case PAD_UP:		swapping_with_y--; break;
+			case PAD_DOWN:		swapping_with_y++; break;
+		}
+		draw_hudl_logo_live(swapping_with_x, swapping_with_y);
+	}
+}
+
+void animate_swap(unsigned char animate_step){
 	int i = 0;
 	int swapping_with_x = gem_board.swapping_x;
 	int swapping_with_y = gem_board.swapping_y;
-
-	
 
 	for (i=3; i<63; i+=4){
 		gem_sprite[i] = SPRITE_ATTR(0,0,0, gem_board.gems[gem_board.swapping_x][gem_board.swapping_y]);
@@ -258,35 +306,21 @@ void animate_swap(void){
 	y = (gem_board.swapping_y * GEM_WIDTH) + (GEM_BOARD_START_Y * 8);
 	switch (gem_board.swapping_dir){
 		case PAD_LEFT:
-			x -= gem_board.swap_step;
+			x -= animate_step;
 			swapping_with_x--;
 			break;
 		case PAD_RIGHT:
-			x += gem_board.swap_step;
+			x += animate_step;
 			swapping_with_x++;
 			break;
 		case PAD_UP:
-			y -= gem_board.swap_step;
+			y -= animate_step;
 			swapping_with_y--;
 			break;
 		case PAD_DOWN:
-			y += gem_board.swap_step;
+			y += animate_step;
 			swapping_with_y++;
 			break;
-	}
-
-	if (gem_board.swap_step == 0) {
-		draw_blank_logo_no_update(gem_board.swapping_x, gem_board.swapping_y);
-	}
-	if (gem_board.swap_step == 2) {
-		draw_blank_logo_no_update(swapping_with_x, swapping_with_y);
-	}
-	if (gem_board.swap_step >= 32) {
-		//TODO update these live instead of needing a rerender
-		oam_clear();
-		draw_hudl_logo(gem_board.swapping_x, gem_board.swapping_y);
-		draw_hudl_logo(swapping_with_x, swapping_with_y);
-		return;
 	}
 
 	sprite_offset = oam_meta_spr(x, y, 0, gem_sprite);
@@ -298,16 +332,16 @@ void animate_swap(void){
 	y = (swapping_with_y * GEM_WIDTH) + (GEM_BOARD_START_Y * 8);
 	switch (gem_board.swapping_dir){
 		case PAD_LEFT:
-			x += gem_board.swap_step;
+			x += animate_step;
 			break;
 		case PAD_RIGHT:
-			x -= gem_board.swap_step;
+			x -= animate_step;
 			break;
 		case PAD_UP:
-			y += gem_board.swap_step;
+			y += animate_step;
 			break;
 		case PAD_DOWN:
-			y -= gem_board.swap_step;
+			y -= animate_step;
 			break;
 	}
 	sprite_offset = oam_meta_spr(x, y, sprite_offset, gem_sprite);

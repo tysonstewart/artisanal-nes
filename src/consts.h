@@ -62,7 +62,7 @@ static unsigned char blank_logo[] = {
 #define GEM_STATE_FILLED    6 //We've filled in blank spaces
 
 #define ACTION_DELAY 20 //Frames to wait between gem board actions
-#define FILL_DELAY 5 //Frames to wait between falling gem movements
+#define FILL_DELAY 2 //Frames to wait between falling gem movements
 #define SWAP_DELAY 1 //Frames to wait between swapping movements
 
 /**

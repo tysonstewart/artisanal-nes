@@ -46,15 +46,28 @@ void main(void)
 					gem_board.frame_counter++;
 					break;
 				}
-				if (gem_board.swap_step <= 32) {
-					animate_swap();
+				if (gem_board.swap_step <= 1) { //first two steps are clearing bg logos
+					prep_animate_swap(gem_board.swap_step);
 					gem_board.swap_step++;
-					gem_board.frame_counter = 0;
-				} else {
+				} else if (gem_board.swap_step <= 9) {
+					animate_swap((gem_board.swap_step-2)*4);
+					gem_board.swap_step ++;
+				} else if (gem_board.swap_step == 10) {
 					perform_swap();
+					set_gem_pal_live(gem_board.swapping_x, gem_board.swapping_y);
+					gem_board.swap_step++;
+				} else if (gem_board.swap_step <= 12) {
+					post_animate_bg(gem_board.swap_step-11);
+					gem_board.swap_step++;
+				} else if (gem_board.swap_step <= 14) {
+					post_animate_swap(gem_board.swap_step-13);
+					gem_board.swap_step++;
+				} else {
+					oam_clear();
 					gem_board.gem_state = GEM_STATE_SWAPPED;
 					gem_board.frame_counter = 0;
 				}
+
 				break;
 
 			
@@ -92,7 +105,7 @@ void main(void)
 					gem_board.frame_counter++;
 					break;
 				}
-				if (check_any_matches()) {
+				if (!check_filling() && check_any_matches()) {
 					remove_matched();
 					gem_board.gem_state = GEM_STATE_CLEARED;
 					gem_board.frame_counter = 0;
