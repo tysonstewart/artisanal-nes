@@ -147,6 +147,35 @@ unsigned char get_bg_pal_y(unsigned char gem_x, unsigned char gem_y){
 	}
 }
 
+void set_gem_pal_live(unsigned char x, unsigned char y){
+    unsigned int address;
+    unsigned char gem, gem_left, gem_right, bg_left, bg_right;
+    unsigned char update[5];
+	bg_pal_x = get_bg_pal_x(x, y);
+	bg_pal_y = get_bg_pal_y(x, y);
+	address = NTADR_A(bg_pal_x, bg_pal_y);
+	gem = gem_board.gems[x][y];
+    if (x == 0) {
+        gem_left = 0;
+    } else {
+        gem_left = gem_board.gems[x-1][y];
+    }
+    if (x == GEM_BOARD_WIDTH) {
+        gem_right = 0;
+    } else {
+        gem_right = gem_board.gems[x+1][y];
+    }
+
+	bg_left = (gem << 6) | (gem_left << 4) | (gem << 2) || (gem_left);
+	bg_right = (gem_right << 6) | (gem << 4) | (gem_right << 2) || (gem);
+
+    update[0] = MSB(address)|NT_UPD_HORZ;
+    update[1] = LSB(address);
+    update[2] = 2;
+    update[3] = bg_left;
+    update[4] = bg_right;
+}
+
 void set_gem_pal(unsigned char x, unsigned char y, unsigned char pal){
 	bg_pal_x = get_bg_pal_x(x, y);
 	bg_pal_y = get_bg_pal_y(x, y);
