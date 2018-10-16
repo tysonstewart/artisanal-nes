@@ -13,7 +13,7 @@ void init_gem_board(void){
 	for (x=0; x<=GEM_BOARD_WIDTH; x++){
 		for (y=0; y<=GEM_BOARD_HEIGHT; y++){
 			gem_board.gems[x][y] = 0;
-			gem_board.matched_gems[x][y] = 0;
+			gem_board.board_copy[x][y] = 0;
 		}
 	}
 	

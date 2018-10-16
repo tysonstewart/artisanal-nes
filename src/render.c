@@ -26,6 +26,16 @@ void draw_cursor(void) {
     oam_meta_spr(x, y, 0, cursor_sprite);
 }
 
+void draw_falling_gem_sprite(unsigned int x, unsigned int y, unsigned int fall_step, unsigned char pal) {
+	int i = 0;
+	for (i=3; i<63; i+=4){
+		gem_sprite[i] = SPRITE_ATTR(0,0,0, pal);
+	}
+	x = (x * GEM_WIDTH) + (GEM_BOARD_START_X * 8);
+	y = (y * GEM_WIDTH) + (GEM_BOARD_START_Y * 8) - (10-fall_step);
+	oam_meta_spr(x, y, 0, gem_sprite);
+}
+
 void draw_hudl_logo(unsigned int x, unsigned int y) {
     int i;
     for (i = 0; i < 4; i++) {
@@ -106,10 +116,6 @@ void set_gem_pal(unsigned char x, unsigned char y, unsigned char pal){
 	vram_put(*bg_pal);
 }
 
-void animate_swap(void) {
-
-}
-
 void update_gem_colors(void){
 	for (x=0; x<=GEM_BOARD_WIDTH; x++){
 		for(y=0; y<=GEM_BOARD_HEIGHT; y++){
@@ -118,8 +124,31 @@ void update_gem_colors(void){
 	}
 }
 
+void draw_falling_gems(void){
+	unsigned char gotit = 0;
+	//info about which gems are falling should be in the board copy
+	oam_clear();
+	
+	for (x=0; x<=GEM_BOARD_WIDTH; x++){
+		for(y=GEM_BOARD_HEIGHT; y>=0; y--){ //start at the bottom
+			if (gem_board.board_copy[x][y] > 0){
+				gem_board.board_copy[x][y] += 1;
+				draw_falling_gem_sprite(x, y, gem_board.board_copy[x][y], gem_board.gems[x][y]);
+				if (gem_board.board_copy[x][y] >= 10) {
+					gem_board.board_copy[x][y] = 0;
+				}
+				gotit = 1;
+				break;
+			}
+		}
+		if (gotit){
+			break;
+		}
+	}
+}
+
 void draw_gem_board(void){
-    // for (x = 0; x <= GEM_BOARD_WIDTH; x++){
+	// for (x = 0; x <= GEM_BOARD_WIDTH; x++){
 	// 	for (y = 0; y <= GEM_BOARD_HEIGHT; y++){
     //         draw_hudl_logo(GEM_BOARD_START_X + x * GEM_WIDTH_TILES, 
     //                        GEM_BOARD_START_Y + y * GEM_WIDTH_TILES);
@@ -140,6 +169,7 @@ void draw_gem_board(void){
 }
 
 void mainloop_render(void){
+
     if (cursor.new_render){
         draw_cursor();
         cursor.new_render = FALSE;

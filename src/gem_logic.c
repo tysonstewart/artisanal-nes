@@ -53,15 +53,34 @@ unsigned char check_any_matches(void) {
     return FALSE;
 }
 
+//Figure out what the new gems will be. We need to copy information about which gems were missing into the other
+//matrix so we can know where to render falling gems.
 void fill_removed(void) {
+    for (x=0; x<=GEM_BOARD_WIDTH; x++){
+        for(y=0; y<=GEM_BOARD_HEIGHT; y++){
+            gem_board.board_copy[x][y] = 0;
+        }
+    }
+
     for (x=0; x<=GEM_BOARD_WIDTH; x++){
         for(y=0; y<=GEM_BOARD_HEIGHT; y++){
             if (gem_board.gems[x][y] == BLANK_GEM_COLOR) {
                 gem_board.gems[x][y] = rand8()&0x03;
-                gem_board.new_render = TRUE;
+                gem_board.board_copy[x][y] = 1;
             }
         }
     }
+}
+
+unsigned char check_filling(void) {
+    for (x=0; x<=GEM_BOARD_WIDTH; x++){
+        for(y=0; y<=GEM_BOARD_HEIGHT; y++){
+            if (gem_board.board_copy[x][y] > 0) {
+                return TRUE;
+            }
+        }
+    }
+    return FALSE;
 }
 
 void settle_after_remove(void) {
@@ -87,7 +106,7 @@ void settle_after_remove(void) {
 void remove_matched(void) {
     for (x=0; x<=GEM_BOARD_WIDTH; x++){
         for(y=0; y<=GEM_BOARD_HEIGHT; y++){
-            gem_board.matched_gems[x][y] = 0;
+            gem_board.board_copy[x][y] = 0;
         }
     }
 
@@ -99,23 +118,23 @@ void remove_matched(void) {
             if (x <= GEM_BOARD_WIDTH-2 && 
                     gem_board.gems[x][y] == gem_board.gems[x+1][y] &&
                     gem_board.gems[x][y] == gem_board.gems[x+2][y]){
-                gem_board.matched_gems[x][y] = 1;
-                gem_board.matched_gems[x+1][y] = 1;
-                gem_board.matched_gems[x+2][y] = 1;
+                gem_board.board_copy[x][y] = 1;
+                gem_board.board_copy[x+1][y] = 1;
+                gem_board.board_copy[x+2][y] = 1;
             }
             if (y <= GEM_BOARD_HEIGHT-2 && 
                     gem_board.gems[x][y] == gem_board.gems[x][y+1] &&
                     gem_board.gems[x][y] == gem_board.gems[x][y+2]){
-                gem_board.matched_gems[x][y] = 1;
-                gem_board.matched_gems[x][y+1] = 1;
-                gem_board.matched_gems[x][y+2] = 1;
+                gem_board.board_copy[x][y] = 1;
+                gem_board.board_copy[x][y+1] = 1;
+                gem_board.board_copy[x][y+2] = 1;
             }
         }
     }
 
     for (x=0; x<=GEM_BOARD_WIDTH; x++){
         for(y=0; y<=GEM_BOARD_HEIGHT; y++){
-            if (gem_board.matched_gems[x][y] == 1) {
+            if (gem_board.board_copy[x][y] == 1) {
                 gem_board.gems[x][y] = BLANK_GEM_COLOR;
                 gem_board.new_render = TRUE;
             }

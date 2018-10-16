@@ -79,6 +79,12 @@ void mainloop_handle_input(void){
 		cursor.new_render = TRUE;
 		return;
 	}
+	if(input&PAD_B){
+		gem_board.gems[cursor.gem_x][cursor.gem_y] = BLANK_GEM_COLOR;
+		gem_board.gem_state = GEM_STATE_CLEARED;
+		gem_board.frame_counter = 0;
+		gem_board.new_render = TRUE;
+	}
 	// if(input&PAD_START){
 	// 	input_btn_start();
 	// 	return;
