@@ -17,18 +17,13 @@ void draw_title_screen() {
 }
 
 void draw_cursor(void) {
-    sprite_offset = oam_spr((cursor.gem_x * GEM_WIDTH) + (GEM_BOARD_START_X * 8), 
-							(cursor.gem_y * GEM_WIDTH) + (GEM_BOARD_START_Y * 8), 
-							CURSOR_BORDER_TOP_LEFT, SPRITE_ATTR(0,0,0, cursor.palette), 0);
-	sprite_offset = oam_spr((cursor.gem_x * GEM_WIDTH) + (GEM_BOARD_START_X * 8) + GEM_WIDTH - 8, 
-							(cursor.gem_y * GEM_WIDTH) + (GEM_BOARD_START_Y * 8), 
-							CURSOR_BORDER_TOP_LEFT, SPRITE_ATTR(0,1,0, cursor.palette), sprite_offset);
-	sprite_offset = oam_spr((cursor.gem_x * GEM_WIDTH) + (GEM_BOARD_START_X * 8), 
-							(cursor.gem_y * GEM_WIDTH) + (GEM_BOARD_START_Y * 8) + GEM_WIDTH - 8, 
-							CURSOR_BORDER_TOP_LEFT, SPRITE_ATTR(1,0,0, cursor.palette), sprite_offset);
-	sprite_offset = oam_spr((cursor.gem_x * GEM_WIDTH) + (GEM_BOARD_START_X * 8) + GEM_WIDTH - 8, 
-							(cursor.gem_y * GEM_WIDTH) + (GEM_BOARD_START_Y * 8) + GEM_WIDTH - 8, 
-							CURSOR_BORDER_TOP_LEFT, SPRITE_ATTR(1,1,0, cursor.palette), sprite_offset);
+    cursor_sprite[3] = SPRITE_ATTR(0,0,0, cursor.palette);
+    cursor_sprite[7] = SPRITE_ATTR(0,1,0, cursor.palette);
+    cursor_sprite[11] = SPRITE_ATTR(1,0,0, cursor.palette);
+    cursor_sprite[15] = SPRITE_ATTR(1,1,0, cursor.palette);
+    x = (cursor.gem_x * GEM_WIDTH) + (GEM_BOARD_START_X * 8);
+    y = (cursor.gem_y * GEM_WIDTH) + (GEM_BOARD_START_Y * 8);
+    oam_meta_spr(x, y, 0, cursor_sprite);
 }
 
 void draw_hudl_logo(unsigned int x, unsigned int y) {
@@ -111,24 +106,8 @@ void set_gem_pal(unsigned char x, unsigned char y, unsigned char pal){
 	vram_put(*bg_pal);
 }
 
-void enter_swap_mode(void) {
-    unsigned int address;
-    x = GEM_BOARD_START_X + cursor.gem_x * GEM_WIDTH_TILES;
-    y = GEM_BOARD_START_Y + cursor.gem_y * GEM_WIDTH_TILES;
-    address = NTADR_A(x, y);
-    blank_gem[0] = MSB(address)|NT_UPD_HORZ;
-    blank_gem[1] = LSB(address);
-    address += 0x20;
-    blank_gem[7] = MSB(address)|NT_UPD_HORZ;
-    blank_gem[8] = LSB(address);
-    address += 0x20;
-    blank_gem[14] = MSB(address)|NT_UPD_HORZ;
-    blank_gem[15] = LSB(address);
-    address += 0x20;
-    blank_gem[21] = MSB(address)|NT_UPD_HORZ;
-    blank_gem[22] = LSB(address);
+void animate_swap(void) {
 
-    set_vram_update(blank_gem);
 }
 
 void update_gem_colors(void){

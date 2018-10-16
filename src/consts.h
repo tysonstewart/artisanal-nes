@@ -31,14 +31,6 @@ static unsigned char hudl_logo[] = {
     HUDL_13, HUDL_14, HUDL_15, HUDL_16
 };
 
-static unsigned char blank_gem[] = {
-    0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00,
-    0x00, 0x00, 0x04, 0x00, 0x00, 0x00, 0x00,
-    NT_UPD_EOF
-};
-
 static unsigned char blank_logo[] = {
     0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00
 };
@@ -72,5 +64,12 @@ static unsigned char blank_logo[] = {
  */
 #define SPRITE_ATTR(flip_horz,flip_vert,prio,pal) ((flip_horz<<7) + (flip_vert<<6) + (prio<<5) + pal)
 
+static unsigned char cursor_sprite[] = {
+    0, 0, CURSOR_BORDER_TOP_LEFT, 0,
+    GEM_WIDTH - 8, 0, CURSOR_BORDER_TOP_LEFT, 0,
+    0, GEM_WIDTH - 8, CURSOR_BORDER_TOP_LEFT, 0,
+    GEM_WIDTH - 8, GEM_WIDTH - 8, CURSOR_BORDER_TOP_LEFT, 0,
+    128
+};
 
 #endif

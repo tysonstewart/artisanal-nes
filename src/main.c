@@ -54,6 +54,8 @@ void main(void)
 			remove_matched();
 			settle_after_remove();
 		}
+
+		mainloop_render();
 		//Wait for next frame
 		ppu_wait_nmi();
 	}
