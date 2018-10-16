@@ -44,6 +44,53 @@ void draw_hudl_logo(unsigned int x, unsigned int y) {
     }
 }
 
+void draw_hudl_logo_live(unsigned char gem_x, unsigned char gem_y) {
+    unsigned int address;
+    unsigned char msb, lsb;
+    msb = GEM_BOARD_START_X + gem_x * GEM_WIDTH_TILES;
+    lsb = GEM_BOARD_START_Y + gem_y * GEM_WIDTH_TILES;
+    address = NTADR_A(msb, lsb);
+    msb = MSB(address);
+    lsb = LSB(address);
+    gem_bg[0] = msb;
+    gem_bg[1] = lsb;
+    gem_bg[3] = msb;
+    gem_bg[4] = lsb + 1;
+    gem_bg[6] = msb;
+    gem_bg[7] = lsb + 2;
+    gem_bg[9] = msb;
+    gem_bg[10] = lsb + 3;
+    lsb += 0x20;
+    gem_bg[12] = msb;
+    gem_bg[13] = lsb;
+    gem_bg[15] = msb;
+    gem_bg[16] = lsb + 1;
+    gem_bg[18] = msb;
+    gem_bg[19] = lsb + 2;
+    gem_bg[21] = msb;
+    gem_bg[22] = lsb + 3;
+    lsb += 0x20;
+    gem_bg[24] = msb;
+    gem_bg[25] = lsb;
+    gem_bg[27] = msb;
+    gem_bg[28] = lsb + 1;
+    gem_bg[30] = msb;
+    gem_bg[31] = lsb + 2;
+    gem_bg[33] = msb;
+    gem_bg[34] = lsb + 3;
+    lsb += 0x20;
+    gem_bg[36] = msb;
+    gem_bg[37] = lsb;
+    gem_bg[39] = msb;
+    gem_bg[40] = lsb + 1;
+    gem_bg[42] = msb;
+    gem_bg[43] = lsb + 2;
+    gem_bg[45] = msb;
+    gem_bg[46] = lsb + 3;
+
+    set_vram_update(gem_bg);
+}
+
 void draw_blank_logo(unsigned int x,  unsigned int y) {
 	int i;
     for (i = 0; i < 4; i++) {
@@ -124,53 +171,6 @@ void update_gem_colors(void){
 	}
 }
 
-void convert_gem(unsigned char gem_x, unsigned char gem_y, unsigned char to_bg) {
-    unsigned int address;
-    unsigned char msb, lsb;
-    msb = GEM_BOARD_START_X + gem_x * GEM_WIDTH_TILES;
-    lsb = GEM_BOARD_START_Y + gem_y * GEM_WIDTH_TILES;
-    address = NTADR_A(msb, lsb);
-    msb = MSB(address);
-    lsb = LSB(address);
-    gem_bg[0] = msb;
-    gem_bg[1] = lsb;
-    gem_bg[3] = msb;
-    gem_bg[4] = lsb + 1;
-    gem_bg[6] = msb;
-    gem_bg[7] = lsb + 2;
-    gem_bg[9] = msb;
-    gem_bg[10] = lsb + 3;
-    lsb += 0x20;
-    gem_bg[12] = msb;
-    gem_bg[13] = lsb;
-    gem_bg[15] = msb;
-    gem_bg[16] = lsb + 1;
-    gem_bg[18] = msb;
-    gem_bg[19] = lsb + 2;
-    gem_bg[21] = msb;
-    gem_bg[22] = lsb + 3;
-    lsb += 0x20;
-    gem_bg[24] = msb;
-    gem_bg[25] = lsb;
-    gem_bg[27] = msb;
-    gem_bg[28] = lsb + 1;
-    gem_bg[30] = msb;
-    gem_bg[31] = lsb + 2;
-    gem_bg[33] = msb;
-    gem_bg[34] = lsb + 3;
-    lsb += 0x20;
-    gem_bg[36] = msb;
-    gem_bg[37] = lsb;
-    gem_bg[39] = msb;
-    gem_bg[40] = lsb + 1;
-    gem_bg[42] = msb;
-    gem_bg[43] = lsb + 2;
-    gem_bg[45] = msb;
-    gem_bg[46] = lsb + 3;
-
-    set_vram_update(gem_bg);
-}
-
 void draw_falling_gems(void){
 	unsigned char gotit = 0;
 	//info about which gems are falling should be in the board copy
@@ -182,7 +182,7 @@ void draw_falling_gems(void){
 				gem_board.board_copy[x][y] += 1;
 				draw_falling_gem_sprite(x, y, gem_board.board_copy[x][y], gem_board.gems[x][y]);
 				if (gem_board.board_copy[x][y] >= 10) {
-                    convert_gem(x, y, TRUE);
+                    draw_hudl_logo_live(x, y);
 					gem_board.board_copy[x][y] = 0;
 				}
 				gotit = 1;
