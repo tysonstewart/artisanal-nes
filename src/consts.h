@@ -103,4 +103,12 @@ static unsigned char blank_gem[] = {
     NT_UPD_EOF
 };
 
+static unsigned char gem_bg[] = {
+    0, 0, HUDL_1, 0, 0, HUDL_2, 0, 0, HUDL_3, 0, 0, HUDL_4,
+    0, 0, HUDL_5, 0, 0, HUDL_6, 0, 0, HUDL_7, 0, 0, HUDL_8,
+    0, 0, HUDL_9, 0, 0, HUDL_10, 0, 0, HUDL_11, 0, 0, HUDL_12,
+    0, 0, HUDL_13, 0, 0, HUDL_14, 0, 0, HUDL_15, 0, 0, HUDL_16,
+    NT_UPD_EOF
+};
+
 #endif
