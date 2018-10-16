@@ -63,6 +63,7 @@ void main(void)
 					break;
 				}
 				settle_after_remove();
+				fill_removed(); //Fills our internal state, but don't render them yet
 				gem_board.gem_state = GEM_STATE_SETTLED;
 				gem_board.frame_counter = 0;
 				break;
@@ -78,7 +79,6 @@ void main(void)
 					gem_board.gem_state = GEM_STATE_CLEARED;
 					gem_board.frame_counter = 0;
 				} else {
-					fill_removed(); //Fills our internal state, but don't render them yet
 					gem_board.gem_state = GEM_STATE_FILLING;
 					gem_board.frame_counter = 0;
 				}
@@ -95,7 +95,6 @@ void main(void)
 					gem_board.frame_counter = 0;
 				} else {
 					oam_clear();
-					gem_board.new_render = TRUE;
 					gem_board.gem_state = GEM_STATE_FILLED;
 					gem_board.frame_counter = 0;
 				}
