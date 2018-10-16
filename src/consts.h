@@ -7,12 +7,24 @@
 #define HUDL_1 0x40
 #define HUDL_2 0x41
 #define HUDL_3 0x42
-#define HUDL_4 0x50
-#define HUDL_5 0x51
-#define HUDL_6 0x52
-#define HUDL_7 0x60
-#define HUDL_8 0x61
-#define HUDL_9 0x62
+#define HUDL_4 0x43
+
+#define HUDL_5 0x50
+#define HUDL_6 0x51
+#define HUDL_7 0x52
+#define HUDL_8 0x53
+
+#define HUDL_9 0x60
+#define HUDL_10 0x61
+#define HUDL_11 0x62
+#define HUDL_12 0x63
+
+#define HUDL_13 0x70
+#define HUDL_14 0x71
+#define HUDL_15 0x72
+#define HUDL_16 0x73
+
+
 #define CURSOR_BORDER_TOP_LEFT  0x44
 #define CURSOR_BORDER_TOP       0x45
 #define CURSOR_BORDER_LEFT      0x46
@@ -21,9 +33,10 @@
  * Game configuration
  */
 #define GEM_BOARD_START_X 2 //2 8 pixel blocks over
-#define GEM_BOARD_START_Y 3 //4 8 pixel blocks down
-#define GEM_WIDTH       24 //24 pixels wide
-#define GEM_BOARD_WIDTH 7 //8 gems wide
+#define GEM_BOARD_START_Y 4 //4 8 pixel blocks down
+#define GEM_WIDTH       32 //24 pixels wide
+#define GEM_BOARD_WIDTH 6 //7 gems wide
+#define GEM_BOARD_HEIGHT 5 //6 gems high
 
 /**
  * Macro for calculating the attribute byte of a sprite. The bits of this byte

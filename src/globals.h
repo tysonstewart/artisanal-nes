@@ -13,4 +13,10 @@ static struct cursor_struct cursor;
 /** Used for rendering sprites */
 static unsigned char sprite_offset;
 
+static unsigned char *bg_pal;
+static unsigned char bg_pal_x;
+static unsigned char bg_pal_y;
+
+static unsigned int x, y;
+
 #endif

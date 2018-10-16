@@ -39,7 +39,7 @@ void mainloop_handle_input(void){
 	}
 	if(input&PAD_UP){
 		if (cursor.gem_y == 0) {
-			cursor.gem_y = GEM_BOARD_WIDTH;
+			cursor.gem_y = GEM_BOARD_HEIGHT;
 		} else {
 			cursor.gem_y -= 1;
 		}
@@ -47,7 +47,7 @@ void mainloop_handle_input(void){
 		return;
 	}
 	if(input&PAD_DOWN){
-		if (cursor.gem_y == GEM_BOARD_WIDTH) {
+		if (cursor.gem_y == GEM_BOARD_HEIGHT) {
 			cursor.gem_y = 0;
 		} else {
 			cursor.gem_y += 1;
