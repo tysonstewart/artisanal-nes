@@ -139,6 +139,12 @@ void draw_gem_board(void){
 			draw_hudl_logo(x,y);
 		}
 	}
+
+	for (x=0; x<=GEM_BOARD_WIDTH; x++){
+		for(y=0; y<=GEM_BOARD_HEIGHT; y++){
+			set_gem_pal(x, y, gem_board.gems[x][y]);
+		}
+	}
 }
 
 void mainloop_render(void){
