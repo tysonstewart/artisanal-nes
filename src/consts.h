@@ -24,6 +24,12 @@
 #define HUDL_15 0x72
 #define HUDL_16 0x73
 
+static unsigned char hudl_logo[] = {
+    HUDL_1, HUDL_2, HUDL_3, HUDL_4,
+    HUDL_5, HUDL_6, HUDL_7, HUDL_8,
+    HUDL_9, HUDL_10, HUDL_11, HUDL_12,
+    HUDL_13, HUDL_14, HUDL_15, HUDL_16
+};
 
 #define CURSOR_BORDER_TOP_LEFT  0x44
 #define CURSOR_BORDER_TOP       0x45
