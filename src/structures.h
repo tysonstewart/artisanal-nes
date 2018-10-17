@@ -26,6 +26,8 @@ typedef struct gem_board_struct {
 	unsigned char swapping_y;
 	unsigned char swapping_dir;
 	unsigned char swap_step;
+
+	unsigned char game_start;
 };
 
 #endif

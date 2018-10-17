@@ -9,6 +9,7 @@ void mainloop_handle_input(void){
 	if (input&PAD_A) {
 		cursor.palette = 2; // set gem swap mode ON
 		cursor.new_render = TRUE;
+		gem_board.game_start = 1;
 	}
 	else if (previous_state&PAD_A && cursor.palette == 2){
 		cursor.palette = 2;
@@ -92,19 +93,19 @@ void mainloop_handle_input(void){
 		return;
 	}
 	if(input&PAD_B){
-		gem_board.board_copy[0][0] = 0x00;
-		gem_board.logos_to_update[0][0] = 1;
+		// gem_board.board_copy[0][0] = 0x00;
+		// gem_board.logos_to_update[0][0] = 1;
 		// for(x=0; x<=GEM_BOARD_WIDTH; x++){
 		// 	for(y=0; y<=GEM_BOARD_HEIGHT; y++){
 		// 		gem_board.board_copy[x][y] = rand8()&0x01;
 		// 		gem_board.logos_to_update[x][y] = 1;
 		// 	}
 		// }
-		gem_board.gem_state = GEM_STATE_TESTING;
-		gem_board.frame_counter = 0;
+		// gem_board.gem_state = GEM_STATE_TESTING;
+		// gem_board.frame_counter = 0;
 	}
-	// if(input&PAD_START){
-	// 	input_btn_start();
-	// 	return;
-	// }
+	if(input&PAD_START){
+		gem_board.game_start = 1;
+		return;
+	}
 }
