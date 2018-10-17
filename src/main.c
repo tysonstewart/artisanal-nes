@@ -9,6 +9,7 @@
 
 void main(void)
 {
+	gem_board.game_start = 0;
 	draw_title_screen();
 	while (gem_board.game_start != 1) {
 		mainloop_handle_input();

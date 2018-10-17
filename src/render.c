@@ -21,6 +21,7 @@ void toggle_pause_palette(char pause_on) {
     ppu_off();
     if (pause_on) {
         pal_bg(pause_pal);
+		oam_clear();
     	ppu_on_bg();
     } else {
         pal_bg(menue_pal);

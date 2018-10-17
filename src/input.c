@@ -5,6 +5,21 @@
 
 void mainloop_handle_input(void){
 	input = pad_trigger(0);		/* Reading controller 1 input */
+	
+	if(input&PAD_START){
+		if (gem_board.game_start == 1) {
+			gem_board.paused = !gem_board.paused;
+		} else {
+			gem_board.game_start = 1;
+		}
+		
+		return;
+	}
+
+	if (gem_board.paused) {
+		return;
+	}
+
 	previous_state = pad_state(0);
 	if (input&PAD_A) {
 		cursor.palette = 2; // set gem swap mode ON
@@ -103,14 +118,5 @@ void mainloop_handle_input(void){
 		// }
 		// gem_board.gem_state = GEM_STATE_TESTING;
 		// gem_board.frame_counter = 0;
-	}
-	if(input&PAD_START){
-		if (gem_board.game_start == 1) {
-			gem_board.paused = !gem_board.paused;
-		} else {
-			gem_board.game_start = 1;
-		}
-		
-		return;
 	}
 }
