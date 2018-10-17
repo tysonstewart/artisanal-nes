@@ -10,7 +10,7 @@
 void main(void)
 {
 	draw_title_screen();
-	delay(120);
+	delay(480);
 
 	write_debug("IT'S SOMETHING!");
 	pal_spr(menue_pal);
