@@ -165,10 +165,12 @@ void main(void)
 
 		if (gem_board.paused) {
 			toggle_pause_palette(TRUE);
+			write_debug("PAUSED          ");
 			while (gem_board.paused) {
 				mainloop_handle_input();
 				ppu_wait_nmi();
 			}
+			write_debug("                ");
 			toggle_pause_palette(FALSE);
 		}
 

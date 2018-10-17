@@ -21,10 +21,11 @@ void toggle_pause_palette(char pause_on) {
     ppu_off();
     if (pause_on) {
         pal_bg(pause_pal);
+    	ppu_on_bg();
     } else {
         pal_bg(menue_pal);
+		ppu_on_all();
     }
-    ppu_on_bg();
 }
 
 void draw_cursor(void) {

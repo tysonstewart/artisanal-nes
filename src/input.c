@@ -109,7 +109,6 @@ void mainloop_handle_input(void){
 			gem_board.paused = !gem_board.paused;
 		} else {
 			gem_board.game_start = 1;
-			gem_board.paused = 0;
 		}
 		
 		return;

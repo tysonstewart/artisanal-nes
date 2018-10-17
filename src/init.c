@@ -11,6 +11,7 @@ void init_gem_board(void){
 
 	gem_board.gem_state = GEM_STATE_READY;
 	gem_board.game_start = 0;
+	gem_board.paused = 0;
 	for (x=0; x<=GEM_BOARD_WIDTH; x++){
 		for (y=0; y<=GEM_BOARD_HEIGHT; y++){
 			gem_board.gems[x][y] = 0;
