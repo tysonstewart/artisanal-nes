@@ -10,9 +10,11 @@
 void main(void)
 {
 	draw_title_screen();
-	delay(480);
+	while (gem_board.game_start != 1) {
+		mainloop_handle_input();
+		ppu_wait_nmi();
+	}
 
-	write_debug("IT'S SOMETHING!");
 	pal_spr(menue_pal);
 
     ppu_off();
@@ -30,7 +32,6 @@ void main(void)
 	{
 		switch(gem_board.gem_state){
 			case GEM_STATE_READY:
-				write_debug("READY           ");
 				mainloop_handle_input();
 				if (cursor.swap_direction != NULL) {
 					gem_board.gem_state = GEM_STATE_SWAPPING;
@@ -41,7 +42,7 @@ void main(void)
 				break;
 				
 			case GEM_STATE_SWAPPING:
-				write_debug("SWAPPING        ");
+				write_debug("                ");
 				if (gem_board.frame_counter <= SWAP_DELAY) {
 					gem_board.frame_counter++;
 					break;
@@ -72,7 +73,6 @@ void main(void)
 
 			
 			case GEM_STATE_SWAPPED:
-				write_debug("SWAPPED         ");
 				if (gem_board.frame_counter <= ACTION_DELAY) {
 					gem_board.frame_counter++;
 					break;
@@ -88,14 +88,13 @@ void main(void)
 				break;
 
 			case GEM_STATE_CLEARED:
-				write_debug("CLEARED         ");
 				if (gem_board.frame_counter <= ACTION_DELAY) {
 					gem_board.frame_counter++;
 					break;
 				}
 				settle_after_remove();
-				gem_board.new_render = TRUE;
 				fill_removed(); //Fills our internal state for properly setting backgrounds
+				gem_board.new_render = TRUE;
 				// set_all_gem_pals_live(); //TODO can use this if we make a method to update logos
 
 				gem_board.gem_state = GEM_STATE_SETTLED;
@@ -103,7 +102,6 @@ void main(void)
 				break;
 
 			case GEM_STATE_SETTLED:
-				write_debug("SETTLED         ");
 				if (gem_board.frame_counter <= ACTION_DELAY) {
 					gem_board.frame_counter++;
 					break;
@@ -119,7 +117,6 @@ void main(void)
 				break;
 			
 			case GEM_STATE_FILLING:
-				write_debug("FILLING         ");
 				if (gem_board.frame_counter <= FILL_DELAY) {
 					gem_board.frame_counter++;
 					break;

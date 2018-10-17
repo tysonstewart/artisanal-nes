@@ -410,7 +410,7 @@ void post_animate_swap(unsigned char step){
 	int swapping_with_x = gem_board.swapping_x;
 	int swapping_with_y = gem_board.swapping_y;
 	if (step == 0) {
-		draw_hudl_logo_live2(gem_board.swapping_x, gem_board.swapping_y);
+		draw_hudl_logo_live(gem_board.swapping_x, gem_board.swapping_y);
 	} else if (step == 1) {
 		switch (gem_board.swapping_dir){
 			case PAD_LEFT: 		swapping_with_x--; break;
@@ -418,7 +418,7 @@ void post_animate_swap(unsigned char step){
 			case PAD_UP:		swapping_with_y--; break;
 			case PAD_DOWN:		swapping_with_y++; break;
 		}
-		draw_hudl_logo_live2(swapping_with_x, swapping_with_y);
+		draw_hudl_logo_live(swapping_with_x, swapping_with_y);
 	}
 }
 
