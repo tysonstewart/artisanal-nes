@@ -42,7 +42,6 @@ void main(void)
 				break;
 				
 			case GEM_STATE_SWAPPING:
-				write_debug("                ");
 				if (gem_board.frame_counter <= SWAP_DELAY) {
 					gem_board.frame_counter++;
 					break;
@@ -146,18 +145,21 @@ void main(void)
 				break;
 			
 			case GEM_STATE_TESTING:
-				if (gem_board.frame_counter <= 20) {
-					gem_board.frame_counter++;
-					break;
-				}
-				draw_hudl_logo_live2(0, 0);
-				gem_board.logos_to_update[0][0]=0;
-				if (check_needing_drawn()){
-					// draw_logos_needing_drawn();
-				} else {
-					gem_board.gem_state = GEM_STATE_READY;
-					gem_board.frame_counter = 0;
-				}
+				// if (gem_board.frame_counter <= 20) {
+				// 	gem_board.frame_counter++;
+				// 	break;
+				// }
+				// draw_hudl_logo_live2(0, 0);
+				// gem_board.logos_to_update[0][0]=0;
+				// if (check_needing_drawn()){
+				// 	// draw_logos_needing_drawn();
+				// } else {
+				// 	gem_board.gem_state = GEM_STATE_READY;
+				// 	gem_board.frame_counter = 0;
+				// }
+
+				gem_board.gem_state = GEM_STATE_READY;
+				gem_board.frame_counter = 0;
 				
 				break;
 
@@ -172,6 +174,9 @@ void main(void)
 			toggle_pause_palette(FALSE);
 		}
 
+		if (gem_board.new_render == 1) {
+			write_debug("                "); //Crazy magic
+		}
 		mainloop_render();
 		//Wait for next frame
 		ppu_wait_nmi();
