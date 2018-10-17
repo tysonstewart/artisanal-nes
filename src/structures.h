@@ -17,6 +17,7 @@ typedef struct cursor_struct {
 typedef struct gem_board_struct {
 	char gems[GEM_BOARD_WIDTH+1][GEM_BOARD_HEIGHT+1];
 	char board_copy[GEM_BOARD_WIDTH+1][GEM_BOARD_HEIGHT+1]; //TODO may want to find a more efficient way to track this
+	char logos_to_update[GEM_BOARD_WIDTH+1][GEM_BOARD_HEIGHT+1]; //For re-rerendering bg logos live
 	unsigned char new_render;
 	unsigned char gem_state;
 	unsigned char frame_counter;

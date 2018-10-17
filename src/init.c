@@ -14,6 +14,7 @@ void init_gem_board(void){
 		for (y=0; y<=GEM_BOARD_HEIGHT; y++){
 			gem_board.gems[x][y] = 0;
 			gem_board.board_copy[x][y] = 0;
+			gem_board.logos_to_update[x][y] = 0;
 		}
 	}
 	

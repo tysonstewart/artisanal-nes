@@ -44,6 +44,103 @@ void draw_hudl_logo(unsigned int x, unsigned int y) {
     }
 }
 
+//Don't think this'll work
+// void draw_all_hudl_logos_live(){
+// 	unsigned int address;
+// 	// unsigned char update[745];
+// 	unsigned char msb, lsb;
+// 	unsigned int idx=0;
+
+// 	for(y=0; y<4*GEM_BOARD_HEIGHT; y++){
+// 		msb = GEM_BOARD_START_X;
+// 		lsb = GEM_BOARD_START_Y + (y/4) * GEM_WIDTH_TILES + y;
+// 		address = NTADR_A(msb, lsb);
+// 		all_logo_update[idx++] = MSB(address)|NT_UPD_HORZ;
+//     	all_logo_update[idx++] = LSB(address);
+//     	all_logo_update[idx++] = 4;
+// 		for(x=0; x<4*GEM_BOARD_WIDTH; x++){
+// 			if (gem_board.gems[x/4][y/4] == BLANK_GEM_COLOR || gem_board.board_copy[x/4][y/4] > 0){
+// 				all_logo_update[idx++] = blank_gem[4*(y%4) + (x%4)];
+// 			} else {
+// 				all_logo_update[idx++] = hudl_logo[4*(y%4) + (x%4)];
+// 			}
+// 		}
+// 	}
+// 	all_logo_update[idx] = NT_UPD_EOF;
+// 	set_vram_update(all_logo_update);
+// }
+
+unsigned char* get_update_logo_bytes(unsigned char gem_x, unsigned char gem_y) {
+	unsigned int address;
+	unsigned char update_bytes[28];
+	unsigned char msb, lsb;
+	unsigned int idx=0;
+	unsigned char t_x, t_y;
+
+	
+	for(t_y=0; t_y<4; t_y++){
+		msb = GEM_BOARD_START_X + gem_x * GEM_WIDTH_TILES;
+		lsb = GEM_BOARD_START_Y + gem_y * GEM_WIDTH_TILES + t_y;
+		address = NTADR_A(msb, lsb);
+		update_bytes[idx++] = MSB(address)|NT_UPD_HORZ;
+    	update_bytes[idx++] = LSB(address);
+    	update_bytes[idx++] = 4;
+		for(t_x=0; t_x<4; t_x++){
+			update_bytes[idx++] = hudl_logo[4*t_y + t_x];
+		}
+	}
+	return update_bytes;
+}
+
+/**
+ * Update up to 5 logos.
+ * return 1 if still needs to draw more
+ */
+// #define LOGOS_AT_ONCE 1
+// void draw_logos_needing_drawn(){
+// 	unsigned int idx=0;
+// 	unsigned int i=0;
+// 	unsigned char update[LOGOS_AT_ONCE*28 + 1];
+// 	unsigned char* logo_update;
+
+// 	for(x=0; x<=GEM_BOARD_WIDTH; x++){
+// 		for(y=0; y<=GEM_BOARD_HEIGHT; y++){
+// 			if (gem_board.logos_to_update[x][y] == 1){
+// 				logo_update = get_update_logo_bytes(x, y);
+// 				for(i=0; i<27; i++){
+// 					update[idx++] = logo_update[i];
+// 				}
+// 				gem_board.logos_to_update[x][y] = 0;
+// 			}
+// 			break;
+// 			// if(idx >= LOGOS_AT_ONCE*28){
+// 			// 	break;
+// 			// }
+// 		}
+// 		break;
+// 		// if(idx >= LOGOS_AT_ONCE*28){
+// 		// 	break;
+// 		// }
+// 	}
+// 	if (idx > 0){
+// 		update[idx] = NT_UPD_EOF;
+// 		set_vram_update(update);
+// 	}
+// }
+
+void draw_hudl_logo_live2(unsigned char gem_x, unsigned char gem_y) {
+	unsigned char update[29];
+	unsigned char* logo_update = get_update_logo_bytes(gem_x, gem_y);
+	int i;
+	
+	for(i=0; i<27; i++){
+		update[i] = logo_update[i];
+	}
+	
+	update[28] = NT_UPD_EOF;
+	set_vram_update(update);
+}
+
 void draw_hudl_logo_live(unsigned char gem_x, unsigned char gem_y) {
     unsigned int address;
     unsigned char msb, lsb;
@@ -147,13 +244,10 @@ unsigned char get_bg_pal_y(unsigned char gem_x, unsigned char gem_y){
 	}
 }
 
-void set_gem_pal_live(unsigned char x, unsigned char y){
-    unsigned int address;
+unsigned char* get_gem_pal_update_bytes(unsigned char x, unsigned char y){
+	unsigned char update_bytes[2];
     unsigned char gem, gem_left, gem_right, bg_left, bg_right;
-    unsigned char update[6];
-	bg_pal_x = get_bg_pal_x(x, y);
-	bg_pal_y = get_bg_pal_y(x, y);
-	address = NTADR_A(bg_pal_x, bg_pal_y);
+	
 	gem = gem_board.gems[x][y];
     if (x == 0) {
         gem_left = 0;
@@ -169,12 +263,53 @@ void set_gem_pal_live(unsigned char x, unsigned char y){
 	bg_left = (gem << 6) | (gem_left << 4) | (gem << 2) | (gem_left);
 	bg_right = (gem_right << 6) | (gem << 4) | (gem_right << 2) | (gem);
 
+	update_bytes[0] = bg_left;
+	update_bytes[1] = bg_right;
+
+    return update_bytes;
+}
+
+void set_gem_pal_live(unsigned char x, unsigned char y){
+    unsigned int address;
+    unsigned char *gem_bytes = get_gem_pal_update_bytes(x, y);
+    unsigned char update[6];
+
+	bg_pal_x = get_bg_pal_x(x, y);
+	bg_pal_y = get_bg_pal_y(x, y);
+	address = NTADR_A(bg_pal_x, bg_pal_y);
+	
     update[0] = MSB(address)|NT_UPD_HORZ;
     update[1] = LSB(address);
     update[2] = 2;
-    update[3] = bg_left;
-    update[4] = bg_right;
+    update[3] = gem_bytes[0];
+    update[4] = gem_bytes[1];
 	update[5] = NT_UPD_EOF;
+	set_vram_update(update);
+}
+
+void set_all_gem_pals_live() {
+	unsigned int c_x, c_y;
+	unsigned int address;
+	unsigned char *gem_bytes;
+	unsigned char update[52];
+
+	address = NTADR_A(8, 30); //Hardcoded for first byte of bg gem palettes
+
+	update[0] = MSB(address)|NT_UPD_HORZ;
+    update[1] = LSB(address);
+    update[2] = 48;
+
+	for(c_x=0; c_x<=GEM_BOARD_WIDTH; c_x++){
+		for(c_y=0; c_y<=GEM_BOARD_HEIGHT; c_y++){
+			gem_bytes = get_gem_pal_update_bytes(c_x,c_y);
+			update[3 + (c_y*8)+c_x] = gem_bytes[0];
+			if(c_x == GEM_BOARD_WIDTH){
+				update[3 + (c_y*8)+c_x+1] = gem_bytes[1];
+			}
+		}
+	}
+
+	update[51] = NT_UPD_EOF;
 	set_vram_update(update);
 }
 
@@ -230,6 +365,7 @@ void draw_falling_gems(void){
 	for (x=0; x<=GEM_BOARD_WIDTH; x++){
 		for(y=GEM_BOARD_HEIGHT; y>=0; y--){ //start at the bottom
 			if (gem_board.board_copy[x][y] > 0){
+				
 				gem_board.board_copy[x][y] += 2;
 				draw_falling_gem_sprite(x, y, gem_board.board_copy[x][y], gem_board.gems[x][y]);
 				if (gem_board.board_copy[x][y] >= 10) {
@@ -282,7 +418,7 @@ void post_animate_swap(unsigned char step){
 	int swapping_with_x = gem_board.swapping_x;
 	int swapping_with_y = gem_board.swapping_y;
 	if (step == 0) {
-		draw_hudl_logo_live(gem_board.swapping_x, gem_board.swapping_y);
+		draw_hudl_logo_live2(gem_board.swapping_x, gem_board.swapping_y);
 	} else if (step == 1) {
 		switch (gem_board.swapping_dir){
 			case PAD_LEFT: 		swapping_with_x--; break;
@@ -290,7 +426,7 @@ void post_animate_swap(unsigned char step){
 			case PAD_UP:		swapping_with_y--; break;
 			case PAD_DOWN:		swapping_with_y++; break;
 		}
-		draw_hudl_logo_live(swapping_with_x, swapping_with_y);
+		draw_hudl_logo_live2(swapping_with_x, swapping_with_y);
 	}
 }
 
@@ -380,5 +516,4 @@ void mainloop_render(void){
 		ppu_on_all();
 		gem_board.new_render = FALSE;
 	}
-
 }

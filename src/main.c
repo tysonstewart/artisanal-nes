@@ -94,7 +94,10 @@ void main(void)
 					break;
 				}
 				settle_after_remove();
-				fill_removed(); //Fills our internal state, but don't render them yet
+				gem_board.new_render = TRUE;
+				fill_removed(); //Fills our internal state for properly setting backgrounds
+				// set_all_gem_pals_live(); //TODO can use this if we make a method to update logos
+
 				gem_board.gem_state = GEM_STATE_SETTLED;
 				gem_board.frame_counter = 0;
 				break;
@@ -143,6 +146,22 @@ void main(void)
 					gem_board.gem_state = GEM_STATE_READY;
 					gem_board.frame_counter = 0;
 				}
+				break;
+			
+			case GEM_STATE_TESTING:
+				if (gem_board.frame_counter <= 20) {
+					gem_board.frame_counter++;
+					break;
+				}
+				draw_hudl_logo_live2(0, 0);
+				gem_board.logos_to_update[0][0]=0;
+				if (check_needing_drawn()){
+					// draw_logos_needing_drawn();
+				} else {
+					gem_board.gem_state = GEM_STATE_READY;
+					gem_board.frame_counter = 0;
+				}
+				
 				break;
 
 		}

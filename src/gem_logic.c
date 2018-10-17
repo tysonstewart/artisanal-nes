@@ -67,9 +67,21 @@ void fill_removed(void) {
             if (gem_board.gems[x][y] == BLANK_GEM_COLOR) {
                 gem_board.gems[x][y] = rand8()&0x03;
                 gem_board.board_copy[x][y] = 1;
+                gem_board.logos_to_update[x][y] = 1;
             }
         }
     }
+}
+
+unsigned char check_needing_drawn(void) {
+    for (x=0; x<=GEM_BOARD_WIDTH; x++){
+        for(y=0; y<=GEM_BOARD_HEIGHT; y++){
+            if (gem_board.logos_to_update[x][y] > 0) {
+                return TRUE;
+            }
+        }
+    }
+    return FALSE;
 }
 
 unsigned char check_filling(void) {
@@ -92,7 +104,6 @@ void settle_after_remove(void) {
                     if (gem_board.gems[x][y2] != BLANK_GEM_COLOR) {
                         gem_board.gems[x][y] = gem_board.gems[x][y2];
                         gem_board.gems[x][y2] = BLANK_GEM_COLOR;
-                        gem_board.new_render = TRUE;
                         break;
                     }
                     y2--;
