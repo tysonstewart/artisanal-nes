@@ -349,14 +349,6 @@ void set_gem_pal(unsigned char x, unsigned char y, unsigned char pal){
 	vram_put(*bg_pal);
 }
 
-void update_gem_colors(void){
-	for (x=0; x<=GEM_BOARD_WIDTH; x++){
-		for(y=0; y<=GEM_BOARD_HEIGHT; y++){
-			set_gem_pal(x, y, gem_board.gems[x][y]);
-		}
-	}
-}
-
 void draw_falling_gems(void){
 	unsigned char gotit = 0;
 	//info about which gems are falling should be in the board copy
@@ -501,7 +493,13 @@ void draw_gem_board(void){
 			}
 		}
 	}
-	update_gem_colors();	
+	
+    // update attributes (colors)
+    for (x=0; x<=GEM_BOARD_WIDTH; x++){
+		for(y=0; y<=GEM_BOARD_HEIGHT; y++){
+			set_gem_pal(x, y, gem_board.gems[x][y]);
+		}
+	}
 }
 
 void mainloop_render(void){

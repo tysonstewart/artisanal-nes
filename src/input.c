@@ -100,7 +100,7 @@ void mainloop_handle_input(void){
 		// 		gem_board.logos_to_update[x][y] = 1;
 		// 	}
 		// }
-		gem_board.gem_state = GEM_STATE_TESTING;
+		//gem_board.gem_state = GEM_STATE_TESTING;
 		gem_board.frame_counter = 0;
 	}
 	// if(input&PAD_START){
