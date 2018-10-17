@@ -2,6 +2,7 @@
 #include "../res/titlescreen_nam.h"
 #include "../res/gem_background_nam.h"
 #include "../res/menue_pal.h"
+#include "../res/pause_pal.h"
 #include "consts.h"
 #include "globals.h"
 
@@ -13,6 +14,16 @@ void draw_title_screen() {
     vram_unrle(titlescreen_nam);
     pal_bg(menue_pal);
     
+    ppu_on_bg();
+}
+
+void toggle_pause_palette(char pause_on) {
+    ppu_off();
+    if (pause_on) {
+        pal_bg(pause_pal);
+    } else {
+        pal_bg(menue_pal);
+    }
     ppu_on_bg();
 }
 
@@ -503,7 +514,6 @@ void draw_gem_board(void){
 }
 
 void mainloop_render(void){
-
     if (cursor.new_render){
         draw_cursor();
         cursor.new_render = FALSE;

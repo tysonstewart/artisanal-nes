@@ -163,6 +163,15 @@ void main(void)
 
 		}
 
+		if (gem_board.paused) {
+			toggle_pause_palette(TRUE);
+			while (gem_board.paused) {
+				mainloop_handle_input();
+				ppu_wait_nmi();
+			}
+			toggle_pause_palette(FALSE);
+		}
+
 		mainloop_render();
 		//Wait for next frame
 		ppu_wait_nmi();

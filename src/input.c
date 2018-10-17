@@ -21,7 +21,7 @@ void mainloop_handle_input(void){
 	}
 
 	if(input&PAD_LEFT){
-		if (cursor.palette == 2) { // gem swap mode is ON
+		if (cursor.palette == 2 && cursor.gem_x > 0) { // gem swap mode is ON
 			cursor.swap_direction = PAD_LEFT;
 			cursor.palette = 1;
 			gem_board.swapping_dir = PAD_LEFT;
@@ -39,7 +39,7 @@ void mainloop_handle_input(void){
 		return;
 	}
 	if(input&PAD_RIGHT){
-		if (cursor.palette == 2) { // gem swap mode is ON
+		if (cursor.palette == 2 && cursor.gem_x < GEM_BOARD_WIDTH) { // gem swap mode is ON
 			cursor.swap_direction = PAD_RIGHT;
 			cursor.palette = 1;
 			gem_board.swapping_dir = PAD_RIGHT;
@@ -105,7 +105,13 @@ void mainloop_handle_input(void){
 		// gem_board.frame_counter = 0;
 	}
 	if(input&PAD_START){
-		gem_board.game_start = 1;
+		if (gem_board.game_start == 1) {
+			gem_board.paused = !gem_board.paused;
+		} else {
+			gem_board.game_start = 1;
+			gem_board.paused = 0;
+		}
+		
 		return;
 	}
 }
