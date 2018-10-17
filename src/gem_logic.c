@@ -163,7 +163,6 @@ void perform_swap(void) {
             gem_board.gems[cursor.gem_x][cursor.gem_y] = gem_board.gems[cursor.gem_x-1][cursor.gem_y];
             gem_board.gems[cursor.gem_x-1][cursor.gem_y] = color_candidate;
             cursor.gem_x -= 1;
-            cursor.new_render = TRUE;
             return;
         case PAD_RIGHT:
             if (cursor.gem_x == GEM_BOARD_WIDTH){
@@ -172,7 +171,6 @@ void perform_swap(void) {
             gem_board.gems[cursor.gem_x][cursor.gem_y] = gem_board.gems[cursor.gem_x+1][cursor.gem_y];
             gem_board.gems[cursor.gem_x+1][cursor.gem_y] = color_candidate;
             cursor.gem_x += 1;
-            cursor.new_render = TRUE;
             return;
         case PAD_UP:
             if (cursor.gem_y == 0){
@@ -181,7 +179,6 @@ void perform_swap(void) {
             gem_board.gems[cursor.gem_x][cursor.gem_y] = gem_board.gems[cursor.gem_x][cursor.gem_y-1];
             gem_board.gems[cursor.gem_x][cursor.gem_y-1] = color_candidate;
             cursor.gem_y -= 1;
-            cursor.new_render = TRUE;
             return;
         case PAD_DOWN:
             if (cursor.gem_y == GEM_BOARD_HEIGHT){
@@ -190,7 +187,6 @@ void perform_swap(void) {
             gem_board.gems[cursor.gem_x][cursor.gem_y] = gem_board.gems[cursor.gem_x][cursor.gem_y+1];
             gem_board.gems[cursor.gem_x][cursor.gem_y+1] = color_candidate;
             cursor.gem_y += 1;
-            cursor.new_render = TRUE;
             return;
         default:
             return;
