@@ -192,3 +192,12 @@ void perform_swap(void) {
             return;
     }
 }
+
+void update_combo_text(void){
+    unsigned int combo = gem_board.combo_counter;
+    unsigned int i=0;
+    
+    combo_text[7] = combo/100 + 48;
+    combo_text[8] = (combo/10)%10 + 48;
+    combo_text[9] = combo%10 + 48; 
+}

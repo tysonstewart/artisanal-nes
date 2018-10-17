@@ -29,6 +29,7 @@ typedef struct gem_board_struct {
 
 	unsigned char game_start;
 	unsigned char paused;
+	unsigned char combo_counter;
 };
 
 #endif

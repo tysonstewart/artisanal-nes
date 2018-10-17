@@ -38,6 +38,7 @@ void main(void)
 					gem_board.gem_state = GEM_STATE_SWAPPING;
 					gem_board.swap_step = 0;
 					gem_board.frame_counter = 0;
+					gem_board.combo_counter = 0;
 					// oam_clear();
 				}
 				break;
@@ -92,6 +93,7 @@ void main(void)
 					gem_board.frame_counter++;
 					break;
 				}
+				gem_board.combo_counter++;
 				settle_after_remove();
 				fill_removed(); //Fills our internal state for properly setting backgrounds
 				gem_board.new_render = TRUE;
@@ -178,7 +180,13 @@ void main(void)
 		}
 
 		if (gem_board.new_render == 1) {
-			write_debug("                "); //Crazy magic
+			if (gem_board.combo_counter == 0) {
+				write_debug("                "); //Crazy magic
+			} else {
+				update_combo_text();
+				write_debug(combo_text); 
+			}
+			
 		}
 		mainloop_render();
 		//Wait for next frame

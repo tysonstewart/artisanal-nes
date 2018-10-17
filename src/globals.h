@@ -23,4 +23,6 @@ static int x, y;
 static int x2, y2;
 static unsigned char color_candidate;
 
+static unsigned char combo_text[16] = {'C','O','M','B','O',':',' ',' ',' ',' ',' ',' ',' ',' ',' ',' '};
+
 #endif
